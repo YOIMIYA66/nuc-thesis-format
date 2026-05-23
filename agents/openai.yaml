@@ -1,0 +1,4 @@
+interface:
+  display_name: "中北大学论文格式"
+  short_description: "强约束中北大学软件学院毕业设计说明书、摘要和外文翻译格式。"
+  default_prompt: "按中北大学软件学院2026届毕业设计说明书格式规范写作、排版或检查论文。"
