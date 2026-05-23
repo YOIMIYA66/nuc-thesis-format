@@ -1,27 +1,148 @@
-# nuc-thesis-format
+# 中北大学论文格式写作 Skill
 
-Codex skill for writing, formatting, and checking Zhongbei University Software College thesis materials.
+这是一个用于 Codex 的论文写作与格式核对 skill，面向中北大学软件学院 2026 届毕业设计说明书、中文摘要、英文摘要、参考文献、致谢和外文翻译材料。
 
-## Contents
+它的目标不是替代学校模板，而是把学校模板和格式要求转成可执行的写作约束，帮助你在写作、排版和检查时少踩格式坑。
 
-- `SKILL.md`: skill instructions and guardrails.
-- `references/format-rules.md`: thesis formatting rules and checklist.
-- `scripts/check_docx_format.py`: automated DOCX structure and style pre-check.
-- `assets/official-templates/`: source templates used when generating Word documents.
-- `agents/openai.yaml`: display metadata for Codex.
+## 能做什么
 
-## Usage
+- 按学校要求生成或修改毕业设计说明书草稿。
+- 检查中文摘要、英文摘要、关键词、目录、正文、参考文献和致谢是否符合基本格式。
+- 生成或整理外文翻译材料，包括封面、英文原文和中文翻译。
+- 对 `.docx` 文件做自动化初检，提示页边距、页眉、结构顺序、关键词、参考文献数量和常见编号问题。
+- 在缺少姓名、学号、指导教师、参考文献等材料时保留 `【待补：字段名】`，避免编造信息。
 
-Install or copy this directory into a Codex skills directory, then invoke the skill for thesis drafts, abstracts, references, acknowledgements, foreign-language translation materials, or DOCX format checks.
+## 文件结构
 
-For DOCX validation:
+```text
+nuc-thesis-format/
+├─ SKILL.md
+├─ README.md
+├─ agents/
+│  └─ openai.yaml
+├─ assets/
+│  ├─ format-summary.png
+│  └─ official-templates/
+├─ references/
+│  └─ format-rules.md
+└─ scripts/
+   └─ check_docx_format.py
+```
+
+- `SKILL.md`：Codex 读取的核心指令，规定写作流程、强制验收项和禁止事项。
+- `references/format-rules.md`：完整格式规则清单，已按用户提供的格式汇总图核对。
+- `scripts/check_docx_format.py`：DOCX 自动化初检脚本。
+- `assets/official-templates/`：学校官方 `.doc` 模板，生成 Word 文件时优先复制模板作为起点。
+- `assets/format-summary.png`：中北大学论文及外文翻译格式要求汇总图，用于人工复核。
+- `agents/openai.yaml`：Codex 中展示 skill 的名称、简介和默认提示。
+
+## 主要格式约束
+
+### 论文全文
+
+- 页边距：上 30mm、下 25mm、左 30mm、右 20mm。
+- 页眉：从目录开始添加 `中北大学2026届毕业设计说明书`，小四号黑体，单倍行距，下方单横线。
+- 页脚：页脚下边距 18mm。
+- 正文：小四号宋体，1.5 倍行距，段前 0 行、段后 0 行。
+- 一级标题：小三号黑体加粗，段前 0.5 行、段后 0.5 行。
+- 二级标题：小四号黑体加粗。
+- 三级标题：小四号黑体，不加粗。
+- 每一章另起一页。
+- 正文页数：除封面、中文摘要、英文摘要、目录外，正文部分不少于 30 页。
+- 查重要求：维普重复率不超过 30%，AIGC 不超过 50%，以当年通知为准。
+
+### 装订顺序
+
+1. 封面
+2. 中文摘要
+3. 英文摘要
+4. 目录
+5. 正文
+6. 参考文献
+7. 致谢
+
+如有主要符号表、附录或优秀毕业设计摘要，按学校模板和实际要求插入。
+
+### 摘要和关键词
+
+- 中文摘要题目：小三号黑体，居中。
+- `摘  要`：小四号黑体，居中。
+- 中文摘要正文：小四号宋体。
+- 中文关键词：3 到 5 个，关键词之间用中文逗号，最后一个关键词后不加标点。
+- 英文摘要字体：Times New Roman。
+- `Abstract`：小四号，居中。
+- 英文关键词标识使用 `Keyword`，关键词之间用英文逗号，最后一个关键词后不加标点。
+
+### 目录、正文和页码
+
+- 目录标题：`目   录`，四号黑体，居中，两个字中间空 3 格。
+- 目录从引言、绪论或前言开始，作为正文第 1 章。
+- 目录页码：右下角罗马数字，例如 `第 Ⅰ 页  共 Ⅰ 页`。
+- 正文页码：右下角阿拉伯数字，例如 `第 1 页  共 30 页`。
+- 正文章节编号只使用三级：`1`、`1.1`、`1.1.1`。
+- 三级以下使用 `（1）`、`①` 等规范序号，不使用 `一、二、三` 或 `1）`。
+
+### 图、表、公式和参考文献
+
+- 图题在图下方，表题在表上方。
+- 图、表、公式按章编号，例如 `图1.1`、`表2.3`、`式(4.3)`。
+- 图表号和题名之间空 1 格。
+- 表格跨页时添加 `续表X.X`，并保留标题栏。
+- 参考文献不少于 20 篇，其中英文文献不少于 5 篇。
+- 参考文献按正文引用顺序排列，正文引用标注使用 `[1]`、`[2]`。
+
+### 外文翻译
+
+- 装订顺序：封面、英文原文、中文翻译。
+- 封面使用外文翻译独立模板。
+- 英文原文可截图插入 Word，但必须整齐、清晰、可读。
+- 中文翻译不少于 3000 字，或不少于 4 页。
+- 页眉统一为 `英文文献及中文翻译`。
+- 除封面外添加页码，右下角显示 `第 1 页  共 4 页`。
+
+## 使用方式
+
+把本目录放到 Codex skills 目录中，例如：
+
+```text
+C:/Users/86198/.codex/skills/nuc-thesis-format
+```
+
+之后可以直接让 Codex 按本 skill 处理论文任务，例如：
+
+```text
+使用 nuc-thesis-format skill，帮我检查这份毕业设计说明书格式。
+```
+
+```text
+使用 nuc-thesis-format skill，按学校格式帮我写中文摘要和英文摘要。
+```
+
+```text
+使用 nuc-thesis-format skill，帮我把外文翻译材料整理成 Word。
+```
+
+## DOCX 自动初检
+
+检查毕业设计说明书：
 
 ```bash
 python C:/Users/86198/.codex/skills/nuc-thesis-format/scripts/check_docx_format.py --kind thesis path/to/file.docx
 ```
 
-For foreign-language translation validation:
+检查外文翻译材料：
 
 ```bash
 python C:/Users/86198/.codex/skills/nuc-thesis-format/scripts/check_docx_format.py --kind translation path/to/file.docx
 ```
+
+脚本只能做初检，不能完全替代 Word/WPS 中的人工复核。页数、分页、页码显示、自动目录、打印效果、查重率和 AIGC 率仍需要人工确认。
+
+## 格式核对结果
+
+已按图片《中北大学论文及外文翻译格式要求汇总》重新核对：
+
+- 已覆盖：页边距、页眉页脚、装订顺序、封面、中文摘要、英文摘要、目录、正文标题、图表公式、参考文献、致谢、外文翻译顺序和页码要求。
+- 已修正：英文关键词分隔符按图片统一为英文逗号。
+- 已补充：目录页从此处开始添加论文页眉，封面、中文摘要和英文摘要不添加页眉页码。
+- 仍需人工确认：官方模板最终视觉效果、Word 自动目录、分页、页数、页码域、打印效果、查重率和 AIGC 检测结果。

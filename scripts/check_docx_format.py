@@ -226,7 +226,11 @@ def check_keywords(paras: list[str], report: Report) -> None:
     else:
         line = en_lines[-1]
         payload = re.sub(r"^.*?\bkey\s*words?\b\s*[:：]?", "", line, flags=re.I).strip()
-        words = [w for w in re.split(r"[;；,，]+", payload) if w.strip()]
+        if ";" in payload or "；" in payload:
+            report.fail("English Keyword line should use English commas, not semicolons.")
+        if "，" in payload:
+            report.fail("English Keyword line should use English commas, not Chinese commas.")
+        words = [w for w in re.split(r"[,]+", payload) if w.strip()]
         if 3 <= len(words) <= 5:
             report.pass_("English keywords count is 3 to 5.")
         else:
